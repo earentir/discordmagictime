@@ -33,8 +33,11 @@
 
     let selectoptions = [`${dateMonths[(new Date(curDateTime).getMonth())]} ${addLZ((new Date(curDateTime).getDate()))}, ${(new Date(curDateTime).getFullYear())} ${buildTHT(curDateTime)}`,
     `${dayofWeek[((new Date(curDateTime).getDay()))]}, ${dateMonths[(new Date(curDateTime).getMonth())]} ${addLZ((new Date(curDateTime).getDate()))}, ${(new Date(curDateTime).getFullYear())} ${buildTHT(curDateTime, false)}`,
-        "01/01/2022",
-    `${dateMonths[(new Date(curDateTime).getMonth())]} ${addLZ((new Date(curDateTime).getDate()))}, ${(new Date(curDateTime).getFullYear())}`, `${buildTHT(curDateTime, false)}`, `${buildTHT(curDateTime, true)}`, "in 1 days"];
+    "01/01/"(new Date(curDateTime).getFullYear()),
+    `${dateMonths[(new Date(curDateTime).getMonth())]} ${addLZ((new Date(curDateTime).getDate()))}, ${(new Date(curDateTime).getFullYear())}`,
+    `${buildTHT(curDateTime, false)}`,
+    `${buildTHT(curDateTime, true)}`,
+        "in 1 days"];
 
     let select = document.getElementById("outputFormat");
     for (let i = 0; i < 7; i++) {
