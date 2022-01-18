@@ -1,0 +1,88 @@
+<label for="localdate">Date</label>
+<input type="date" id="localdate" name="localdate" value="" min="" max="" onclick="calcUTC();" required>
+|
+<label for="localtime"></label>
+<input type="time" id="localtime" name="localtime" min="" max="" onclick="calcUTC();" required>
+|
+<label for="outputFormat">Output Format</label>
+<select name="outputFormat" id="outputFormat" onclick="calcUTC();"></select>
+|
+<input type="button" onclick="calcUTC()" value="Calculate">
+|
+<label for="discorttime">Discord Time</label>
+<input type="text" id="discorttime" name="discorttime">
+
+<script>
+    //JavaScript is fugly, Fuck You JavaScript, GOLANG IS THE BEST
+    //ToDo: Add Eventlistener for page loaded, then call JS func()
+    //ToDo: Fix option short date
+    //ToDo: Fix option relative time
+
+    let dateMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    let dayofWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednsday', 'Thursday', 'Friday', 'Saturday'];
+
+
+    let curDateTime = new Date();
+    // let curDateTime = new Date('2022-01-18T05:00:00Z');
+
+    let curDate = new Date(curDateTime).toISOString().split("T")[0];
+    let curTime = new Date(curDateTime).toTimeString().split(" ")[0];
+
+    document.getElementById("localdate").value = curDate;
+    document.getElementById("localtime").value = new Date(curDateTime).toTimeString().split(" ")[0];
+
+    let selectoptions = [`${dateMonths[(new Date(curDateTime).getMonth())]} ${addLZ((new Date(curDateTime).getDate()))}, ${(new Date(curDateTime).getFullYear())} ${buildTHT(curDateTime)}`,
+    `${dayofWeek[((new Date(curDateTime).getDay()))]}, ${dateMonths[(new Date(curDateTime).getMonth())]} ${addLZ((new Date(curDateTime).getDate()))}, ${(new Date(curDateTime).getFullYear())} ${buildTHT(curDateTime, false)}`,
+        "01/01/2022",
+    `${dateMonths[(new Date(curDateTime).getMonth())]} ${addLZ((new Date(curDateTime).getDate()))}, ${(new Date(curDateTime).getFullYear())}`, `${buildTHT(curDateTime, false)}`, `${buildTHT(curDateTime, true)}`, "in 1 days"];
+
+    let select = document.getElementById("outputFormat");
+    for (let i = 0; i < 7; i++) {
+        let option = document.createElement('option');
+        option.value = i;
+        option.innerHTML = selectoptions[i];
+        select.append(option);
+    }
+
+    //build Twelve Hour Time
+    function buildTHT(datetime, seconds) {
+        let curTimeMinutes = new Date(datetime).toTimeString().split(" ")[0].split(":")[1];
+        let curTimeHours = new Date(datetime).toTimeString().split(" ")[0].split(":")[0];
+        let curTimeSeconds = new Date(datetime).toTimeString().split(" ")[0].split(":")[2];
+
+        //Add seconds to minutes if true
+        if (seconds) {
+            curTimeMinutes = curTimeMinutes + ":" + curTimeSeconds
+        }
+
+        //Remove 12h from time to switch from 24h -> 12h
+        if (curTimeHours > 12) {
+            curTimeHours = curTimeHours - 12;
+            return addLZ(curTimeHours) + ':' + curTimeMinutes + ' PM';
+        }
+
+        return addLZ(curTimeHours) + ':' + curTimeMinutes + ' AM';
+    }
+
+    //Add Leading Zero
+    function addLZ(digit) {
+        if (digit.toString().length < 2) {
+            return '0' + digit;
+        }
+        else
+            return digit;
+    }
+
+    function calcUTC() {
+        let dateValue = document.getElementById("localdate").value;
+        let timeValue = document.getElementById("localtime").value;
+
+        let preflightUTC = new Date(dateValue + 'T' + timeValue);
+        let epoch = String(new Date(preflightUTC).valueOf()).substring(0, 10);
+        let discorttimeforms = ['f', 'F', 'd', 'D', 't', 'T', 'R'];
+
+        document.getElementById("discorttime").value = "<t:" + epoch + `:${discorttimeforms[document.getElementById("outputFormat").value]}>`;
+    }
+
+    calcUTC();
+</script>
